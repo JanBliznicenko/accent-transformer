@@ -41,6 +41,16 @@ ATAbstractUnaccentTransformerTest >> testAccentedUppercase [
 ]
 
 { #category : #tests }
+ATAbstractUnaccentTransformerTest >> testImpossibleTransformationFromWideString [
+
+	| original transformed |
+	original := 'ěÉ大'.
+	self assert: original isWideString.
+	transformed := original withoutAccent.
+	self deny: transformed isByteString
+]
+
+{ #category : #tests }
 ATAbstractUnaccentTransformerTest >> testNotAccentedLowercase [
 
 	self assert: (self classToTest transform: $e) equals: $e.
@@ -116,4 +126,26 @@ ATAbstractUnaccentTransformerTest >> testStringWithoutAccent [
 		assert:
 		'escrzyaieuoněščřžýáíéůöňESCRZYAIEUONĚŠČŘŽÝÁÍÉŮÖŇ' withoutAccent
 		equals: 'escrzyaieuonescrzyaieuonESCRZYAIEUONESCRZYAIEUON'
+]
+
+{ #category : #tests }
+ATAbstractUnaccentTransformerTest >> testTransformationFromWideString [
+
+	| original transformed |
+	original := 'ěÉ'.
+	self assert: original isWideString.
+	transformed := original withoutAccent.
+	self assert: transformed isByteString
+]
+
+{ #category : #tests }
+ATAbstractUnaccentTransformerTest >> testTransformationFromWideSymbol [
+
+	| original transformed |
+	original := #ěÉ.
+	self assert: original isWideString.
+	self assert: original isSymbol.
+	transformed := original withoutAccent.
+	self assert: transformed isByteString.
+	self assert: transformed isSymbol
 ]

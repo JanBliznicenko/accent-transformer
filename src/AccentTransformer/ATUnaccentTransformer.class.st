@@ -205,5 +205,11 @@ ATUnaccentTransformer class >> transformDictionary [
 { #category : #accessing }
 ATUnaccentTransformer class >> transformString: aString [
 
-	^ aString collect: [ :eachChar | self transform: eachChar ]
+	| transformedString |
+	transformedString := aString
+		                     collect: [ :eachChar | 
+		                     self transform: eachChar ]
+		                     as: ByteString.
+	aString isSymbol ifFalse: [ ^ transformedString ].
+	^ transformedString asSymbol
 ]
