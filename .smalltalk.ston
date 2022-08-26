@@ -1,0 +1,16 @@
+SmalltalkCISpec {
+	#loading : [
+		SCIMetacelloLoadSpec {
+			#platforms : [
+				#pharo
+			],
+			#directory : 'src',
+			#baseline : 'AccentTransformer'
+		}
+	],
+	#testing : {
+		#packages : [
+			'AccentTransformer*'
+		]
+	}
+}

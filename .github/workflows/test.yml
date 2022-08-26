@@ -1,0 +1,32 @@
+name: Test
+
+on:
+  workflow_dispatch:
+  workflow_call:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  
+  build:
+    runs-on: ubuntu-latest
+    name: 'Build and Test'
+    strategy:
+      matrix:
+        smalltalk:
+          - Pharo64-11
+          - Pharo64-10
+          - Pharo64-6.1
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2.4.0
+      - name: Load SmalltalkCI environment
+        uses: hpi-swa/setup-smalltalkCI@1.3.2
+        id: smalltalkci
+        with:
+          smalltalk-image: ${{ matrix.smalltalk }}
+      - name: Prepare image and test
+        run: smalltalkci -s ${{ steps.smalltalkci.outputs.smalltalk-image }}
+        shell: bash
+        
