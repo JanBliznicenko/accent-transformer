@@ -1,5 +1,5 @@
 Class {
-	#name : #ATUnaccentTransformer,
+	#name : #ATAccentTransformer,
 	#superclass : #Object,
 	#classInstVars : [
 		'transformDictionary'
@@ -8,7 +8,36 @@ Class {
 }
 
 { #category : #accessing }
-ATUnaccentTransformer class >> createTransformDictionary [
+ATAccentTransformer class >> compare: firstString with: secondString caseSensitive: isCaseSensitive [
+
+	"returns boolean whether first string is before second string (like < ), but character with accent is always right after character without accent"
+
+	| firstCaseProcessed secondCaseProcessed firstWithoutAccent secondWithoutAccent |
+	firstCaseProcessed := isCaseSensitive
+		                      ifTrue: [ firstString ]
+		                      ifFalse: [ firstString asLowercase ].
+	secondCaseProcessed := isCaseSensitive
+		                       ifTrue: [ secondString ]
+		                       ifFalse: [ secondString asLowercase ].
+
+	firstWithoutAccent := firstCaseProcessed withoutAccent.
+	secondWithoutAccent := secondCaseProcessed withoutAccent.
+
+	firstWithoutAccent withIndexDo: [ :charOfFirstWithoutAccent :index | 
+		| charOfSecondWithoutAccent charOfFirst charOfSecond |
+		secondString size < index ifTrue: [ ^ false ].
+		charOfSecondWithoutAccent := secondWithoutAccent at: index.
+		charOfFirst := firstCaseProcessed at: index.
+		charOfSecond := secondCaseProcessed at: index.
+		charOfFirst = charOfSecond ifFalse: [ 
+			charOfFirstWithoutAccent = charOfSecondWithoutAccent ifFalse: [ 
+				^ charOfFirstWithoutAccent < charOfSecondWithoutAccent ].
+			^ charOfFirst < charOfSecond ] ].
+	^ firstString size < secondString size
+]
+
+{ #category : #accessing }
+ATAccentTransformer class >> createTransformDictionary [
 
 	^ { 
 		  ($¡ -> $!).
@@ -183,27 +212,27 @@ ATUnaccentTransformer class >> createTransformDictionary [
 ]
 
 { #category : #accessing }
-ATUnaccentTransformer class >> resetTransformDictionary [
+ATAccentTransformer class >> resetTransformDictionary [
 
 	<script>
 	transformDictionary := nil
 ]
 
 { #category : #accessing }
-ATUnaccentTransformer class >> transform: aCharacter [
+ATAccentTransformer class >> transform: aCharacter [
 
 	^ self transformDictionary at: aCharacter ifAbsent: [ aCharacter ]
 ]
 
 { #category : #accessing }
-ATUnaccentTransformer class >> transformDictionary [
+ATAccentTransformer class >> transformDictionary [
 
 	^ transformDictionary ifNil: [ 
 		  transformDictionary := self createTransformDictionary ]
 ]
 
 { #category : #accessing }
-ATUnaccentTransformer class >> transformString: aString [
+ATAccentTransformer class >> transformString: aString [
 
 	| transformedString |
 	transformedString := aString

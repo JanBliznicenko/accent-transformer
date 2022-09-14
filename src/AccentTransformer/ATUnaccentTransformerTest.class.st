@@ -10,5 +10,5 @@ Class {
 { #category : #tests }
 ATUnaccentTransformerTest >> classToTest [
 
-	^ ATUnaccentTransformer
+	^ ATAccentTransformer
 ]

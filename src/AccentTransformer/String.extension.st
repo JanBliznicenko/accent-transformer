@@ -3,7 +3,7 @@ Extension { #name : #String }
 { #category : #'*AccentTransformer' }
 String >> asLowercaseWithoutAccent [
 
-	^ ATLowercaseUnaccentTransformer transformString: self
+	^ ATAccentTransformer transformString: self asLowercase
 ]
 
 { #category : #'*AccentTransformer' }
@@ -30,5 +30,5 @@ String >> includesAccentedSubstring: aString caseSensitive: aBoolean [
 { #category : #'*AccentTransformer' }
 String >> withoutAccent [
 
-	^ ATUnaccentTransformer transformString: self
+	^ ATAccentTransformer transformString: self
 ]
