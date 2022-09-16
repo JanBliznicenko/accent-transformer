@@ -10,7 +10,7 @@ Class {
 { #category : #accessing }
 ATAccentTransformer class >> compare: firstString with: secondString caseSensitive: isCaseSensitive [
 
-	"returns boolean whether first string is before second string (like < ), but character with accent is always right after character without accent"
+	"Three-way comparison. Returns negative number if first is before second, positive if second before first and 0 if equal"
 
 	| firstCaseProcessed secondCaseProcessed firstWithoutAccent secondWithoutAccent |
 	firstCaseProcessed := isCaseSensitive
@@ -25,15 +25,20 @@ ATAccentTransformer class >> compare: firstString with: secondString caseSensiti
 
 	firstWithoutAccent withIndexDo: [ :charOfFirstWithoutAccent :index | 
 		| charOfSecondWithoutAccent charOfFirst charOfSecond |
-		secondString size < index ifTrue: [ ^ false ].
+		secondString size < index ifTrue: [ ^ 1 ].
 		charOfSecondWithoutAccent := secondWithoutAccent at: index.
 		charOfFirst := firstCaseProcessed at: index.
 		charOfSecond := secondCaseProcessed at: index.
 		charOfFirst = charOfSecond ifFalse: [ 
 			charOfFirstWithoutAccent = charOfSecondWithoutAccent ifFalse: [ 
-				^ charOfFirstWithoutAccent < charOfSecondWithoutAccent ].
-			^ charOfFirst < charOfSecond ] ].
-	^ firstString size < secondString size
+				^ charOfFirstWithoutAccent < charOfSecondWithoutAccent
+					  ifTrue: [ -1 ]
+					  ifFalse: [ 1 ] ].
+			^ charOfFirst < charOfSecond
+				  ifTrue: [ -1 ]
+				  ifFalse: [ 1 ] ] ].
+	firstString size < secondString size ifTrue: [ ^ -1 ].
+	^ 0
 ]
 
 { #category : #accessing }
@@ -209,6 +214,17 @@ ATAccentTransformer class >> createTransformDictionary [
 		  ($ž -> $z).
 		  ($Ż -> $Z).
 		  ($ż -> $z) } asDictionary
+]
+
+{ #category : #accessing }
+ATAccentTransformer class >> is: firstString before: secondString caseSensitive: isCaseSensitive [
+
+	"returns boolean whether first string is before second string (like < ), but unlike default string comparison that compares chars by ASCII/Unicode numbers, this method puts character with accent always right after character without accent (like AÁBCČD)"
+
+	^ (self
+		   compare: firstString
+		   with: secondString
+		   caseSensitive: isCaseSensitive) < 0
 ]
 
 { #category : #accessing }
